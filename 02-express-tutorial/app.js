@@ -1,54 +1,25 @@
-const http = require("http");
-const fs = require("fs");
+const express = require("express");
+const path = require("path");
+const app = express();
 
-const homePage = fs.readFileSync("./navbar-app/index.html");
-const homeStyle = fs.readFileSync("./navbar-app/styles.css");
-const homepage_logo = fs.readFileSync("./navbar-app/logo.svg");
-const homepage_logic = fs.readFileSync("./navbar-app/browser-app.js");
-
-const server = http.createServer((req, res) => {
-  const url = req.url;
-  console.log(url);
-
-  if (url === "/") {
-    res.writeHead(200, { "content-type": "text/html" });
-    res.write(homePage);
-    res.end();
-  }
-  //about as page
-  else if (url === "/about") {
-    res.writeHead(200, { "content-type": "text/html" });
-    res.write("<h1>About Page</h1>");
-    res.end("");
-  }
-  // home page style css
-  else if (url === "/styles.css") {
-    res.writeHead(200, { "content-type": "text/css" });
-    res.write(homeStyle);
-    res.end();
-  }
-  // home page logo svg
-  else if (url === "/logo.svg") {
-    res.writeHead(200, { "content-type": "image/svg+xml" });
-    res.write(homepage_logo);
-    res.end();
-  }
-
-  // home page logic
-  else if (url === "/browser-app.js") {
-    res.writeHead(200, { "content-type": "text/javascript" });
-    res.write(homepage_logic);
-    res.end();
-  }
-
-  // page not Found
-  else {
-    res.writeHead(404, { "content-type": "text/html" });
-    res.write("<h1>Page not Found</h1>");
-    res.end("<a>Back to Home page</a>");
-  }
+//set static and middleware
+app.use(express.static("./public"));
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./navbar-app/index.html"));
 });
 
-server.listen(5000, () => {
-  console.log("server listen on port 5000");
+app.all("*", (req, res) => {
+  res.status(404).send("Page not found");
 });
+
+app.listen(3000, () => {
+  console.log("server is listen in port 3000");
+});
+
+//app.get
+// app.post
+//app.put
+//app.delete
+//app.all
+//app.listen
+//app.use
